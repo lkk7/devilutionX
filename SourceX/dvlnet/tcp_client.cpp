@@ -124,6 +124,11 @@ bool tcp_client::SNetLeaveGame(int type)
 	return ret;
 }
 
+std::string tcp_client::make_default_gamename()
+{
+	return std::string(sgOptions.szBindAddress);
+}
+
 tcp_client::~tcp_client()
 {
 }
