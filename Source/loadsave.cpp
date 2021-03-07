@@ -31,6 +31,11 @@ public:
 		    && m_bufferLen >= (m_bufferPtr + len);
 	}
 
+	void skip(Uint32 len)
+	{
+		m_bufferPtr += len;
+	}
+
 	Uint8 nextByte()
 	{
 		if (!this->isValid(1))
@@ -40,6 +45,18 @@ public:
 		m_bufferPtr++;
 
 		return value;
+	}
+
+	Uint32 nextLE16()
+	{
+		if (!this->isValid(2))
+			return 0;
+
+		Uint32 value;
+		memcpy(&value, &m_buffer[m_bufferPtr], 2);
+		m_bufferPtr += 2;
+
+		return SDL_SwapLE16(value);
 	}
 
 	Uint32 nextLE32()
@@ -52,6 +69,53 @@ public:
 		m_bufferPtr += 4;
 
 		return SDL_SwapLE32(value);
+	}
+
+	Uint32 nextBE32()
+	{
+		if (!this->isValid(4))
+			return 0;
+
+		Uint32 value;
+		memcpy(&value, &m_buffer[m_bufferPtr], 4);
+		m_bufferPtr += 4;
+
+		return SDL_SwapBE32(value);
+	}
+
+	Uint32 nextLE64()
+	{
+		if (!this->isValid(8))
+			return 0;
+
+		Uint32 value;
+		memcpy(&value, &m_buffer[m_bufferPtr], 8);
+		m_bufferPtr += 8;
+
+		return SDL_SwapLE64(value);
+	}
+
+	bool nextBool8()
+	{
+		if (!this->isValid(1))
+			return false;
+
+		Uint8 value = m_buffer[m_bufferPtr];
+		m_bufferPtr++;
+
+		return value != 0;
+	}
+
+	bool nextBool32()
+	{
+		if (!this->isValid(4))
+			return false;
+
+		Uint32 value;
+		memcpy(&value, &m_buffer[m_bufferPtr], 4);
+		m_bufferPtr += 4;
+
+		return value != 0;
 	}
 
 	~LoadHelper()
